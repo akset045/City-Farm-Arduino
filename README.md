@@ -10,8 +10,8 @@
 
 Небольшой конспект: [Google Drive](https://docs.google.com/document/d/1cDQXyRBJo9yiUTyEtSX7WBYH4Pq35oOjftM2cYVd6oY/)
 
-♦ *File1.pp* – это файл с кодом программы для Arduino на C++<br>
-♦ *City_Farm_Arduino.code-workspace* - файл воркспейса VS Code
+♦ __File1.pp__ – это файл с кодом программы для Arduino на C++<br>
+♦ **City_Farm_Arduino.code-workspace** - файл воркспейса VS Code
 
 
 
