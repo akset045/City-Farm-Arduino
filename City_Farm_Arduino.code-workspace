@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "(Windows) Launch",
+				"type": "cppvsdbg",
+				"request": "launch",
+				"program": "enter program name, for example ${workspaceFolder}/a.exe",
+				"args": [],
+				"stopAtEntry": false,
+				"cwd": "${workspaceFolder}",
+				"environment": [],
+				"console": "externalTerminal"
+			}
+		]
+	}
+}
