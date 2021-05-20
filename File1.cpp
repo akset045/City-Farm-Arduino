@@ -33,6 +33,7 @@ String a;
 int b;
 char c;
 char d;
+boolean newcom = 0;
  
 const String waitg = "Done. I'm listening  MY LORD!";
 const String N1 = "Уровень ";
@@ -59,11 +60,25 @@ void waits()
   Serial.println(waitg);
 }
 */
- 
+
+/* 
 void CO2show()
 {
-  Serial.println("CO2: " + String(co2.readCO2PWM()));
+  client.println("HTTP/1.1 200 OK");
+  client.println("Content-Type: text/html");
+  client.println("Connection: close"); 
+  client.println("Refresh: 5");
+  client.println();
+  client.println("<!DOCTYPE HTML>");
+  client.println("<html>");
+  client.print("<title>My web Server</title>");                  //название страницы
+  client.print("<H1>My web Server</H1>");                        //заголовк на странице
+  client.print("CO2: " + String(co2.readCO2PWM()));      //кнопка выключить
+  client.println("<br />");
+  client.println("</html>");
+  break;
 }
+*/
  
 void Timeshow()
 {
@@ -156,7 +171,7 @@ void Allshow()
   Timeshow();
   delay(1000);
   Serial.println();
-  CO2show();
+  // CO2show();
   delay(1000);
   Serial.println();
   Humishow();
@@ -175,7 +190,7 @@ void PompOn()
 }
  
 void PompOff()
-{
+{ 
   digitalWrite (POMP_PIN, B);
 }
 
@@ -259,11 +274,8 @@ void check()
 
 
 void clientA()
-
 {
-  
   EthernetClient client = server.available();
-
   if (client)
   {
     Serial.println("new client");
@@ -273,6 +285,34 @@ void clientA()
       if (client.available()) 
       {
         char c = client.read();
+
+        if (newcom == " ")
+        {
+          newcom = 0;
+        }
+
+        if (c == '1')
+        {
+          newcom = 1;
+        }
+
+        if (newcom == 1)
+        {
+          Serial.println(c);
+          if (c == '1')
+          {
+            Allshow();
+          }
+
+          if (c == "2")
+          {
+            // CO2show();
+
+          
+
+          }
+        }
+
         Serial.write(c);
         if (c == '\n' && currentLineIsBlank) 
         {
@@ -283,27 +323,16 @@ void clientA()
           client.println();
           client.println("<!DOCTYPE HTML>");
           client.println("<html>");
-          for (int analogChannel = 0; analogChannel < 6; analogChannel++) 
-          {
-            int sensorReading = analogRead(analogChannel);
-            client.print("analog input ");
-            client.print(analogChannel);
-            client.print(" is ");
-            client.print(sensorReading);
-            client.println("<br />");
-          }
+          client.print("<title>My web Server</title>");                  //название страницы
+          client.print("<H1>My web Server</H1>");                        //заголовк на странице
+          client.print("<a href=\"/$1\"><button>On</button></a>");       //кнопка включить
+          client.print("<a href=\"/$2\"><button>Off</button></a>");      //кнопка выключить
+          client.println("<br />");
+          client.print("<a " String(Vodashow()) "</a>");
           client.println("</html>");
           break;
         }
 
-        if (c == '\n') 
-        {
-          currentLineIsBlank = true;
-        } else if (c != '\r') 
-        
-        {
-          currentLineIsBlank = false;
-        }
       }
     }
     delay(1);
@@ -357,17 +386,14 @@ void setup()
     Serial.println("Ethernet cable is not connected.");
   }
 
-  // start the server
   server.begin();
   Serial.print("server is at ");
   Serial.println(Ethernet.localIP());
- 
-  // Serial.println("YES, MY LORD!");
 }
  
 void loop() 
 {
-  // user_commans();
+  clientA();
   delay(3000);
   style_machine();
   // check();
