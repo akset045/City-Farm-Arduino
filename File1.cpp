@@ -29,8 +29,12 @@ static DS3231 RTC;
  
 String a;
 int b;
+/*
 char c;
 char d;
+*/
+String c;
+String d;
  
 const String waitg = "Done. I'm listening  MY LORD!";
 const String N1 = "Уровень ";
