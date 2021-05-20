@@ -3,6 +3,8 @@
 #include "DHT.h"
 #include "MHZ.h"   
 #include "RTC.h"
+#include <SPI.h>
+#include <Ethernet.h>
 
 // С Web-Server
  
@@ -41,6 +43,14 @@ const String N5 = "положеного – ";
 const String N6 = "влажности";
 const String N7 = "CO2";
 const String N8 = "%";
+
+byte mac[] = 
+{
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
+};
+IPAddress ip(172,22,0,10);
+
+EthernetServer server(80);
  
 void waits()
 {
