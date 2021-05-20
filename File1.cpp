@@ -289,11 +289,11 @@ void user_commans()
       Serial.println();
       Serial.println("Укажите новое: ");
       Serial.print("1: ");
-      c = Serial.read();
-      delay(1000);
-      Serial.print("2: ");
-      d = Serial.read();
-      RTC.setDateTime(c, d);
+      // c = Serial.read();
+      // delay(1000);
+      // Serial.print("2: ");
+      // d = Serial.readString();
+      // RTC.setDateTime(c, d);
       // RTC.setDateTime(c*, d*);
       // RTC.setDateTime(__DATE__, __TIME__);
       // RTC.setDateTime(*__DATE__, *__TIME__);
