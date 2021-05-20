@@ -6,37 +6,44 @@
 
 // Без Web
 // ...
- 
+
+// Пин датчика MH-Z19B для CO2:
 #define CO2_IN 9
  
+// Пины датчика DHT:
 #define DHT22_PIN 8
 #define DHTTYPE DHT22
- 
+
+// Пины датчика показателей воды:
 #define WB_1_PIN 10
 #define WB_2_PIN 11
- 
+
+// Пины 3 ламп освещения:
 #define SVET_PIN_1 5
 #define SVET_PIN_2 6
 #define SVET_PIN_3 7
- 
+
+// Насос воды:
 #define POMP_PIN 4
- 
+
+// Сокращения для подачи и отключения электро-питания:
 #define A HIGH
 #define B LOW
+
+MHZ co2(CO2_IN, MHZ19B); // Датчик MH-Z19B для CO2
+DHT dht(DHT22_PIN, DHTTYPE); // Датчик DHT для влажности и температуры
+static DS3231 RTC; // Датчик времени
  
-MHZ co2(CO2_IN, MHZ19B);
-DHT dht(DHT22_PIN, DHTTYPE);
-static DS3231 RTC;
- 
-String a;
-int b;
+String a; // Переменная ввода команд на COM-терминале
+int b; // Переменная режима работы: авто и ручной
 /*
 char c;
 char d;
 */
 String c;
 String d;
- 
+
+// Набор сокращений имён:
 const String waitg = "Done. I'm listening  MY LORD!";
 const String N1 = "Уровень ";
 const String N2 = "Температура ";
@@ -47,19 +54,19 @@ const String N6 = "влажности";
 const String N7 = "CO2";
 const String N8 = "%";
  
-void waits()
+void waits() // Функция сигнализирующая выполнение команды и ожидания следующей
 {
   Serial.print("\n");
   Serial.println(waitg);
 }
  
  
-void CO2show()
+void CO2show() // Функция вывода показателей CO2
 {
   Serial.println("CO2: " + String(co2.readCO2PWM()));
 }
  
-void Timeshow()
+void Timeshow() // Функция вывода даты и времени
 {
   Serial.println(
   "Date: " +
@@ -72,7 +79,7 @@ void Timeshow()
   );
 }
  
-void Humishow()
+void Humishow() // Функция вывода влажности
 {
   Serial.println(
   "Владность: " +
@@ -80,14 +87,14 @@ void Humishow()
   );
 }
  
-void Tempshow()
+void Tempshow() // Функция вывода температуры
 {
   Serial.println("Температура: " + 
   String(dht.readTemperature()) + "°C"
   );
 }
  
-void Vodashow()
+void Vodashow() // Функция вывода уровня воды
 {
   if (digitalRead(WB_1_PIN) == 0) 
   {
@@ -100,51 +107,51 @@ void Vodashow()
   }
 }
  
-void SvetAll_On()
+void SvetAll_On() // Функция вкл всех ламп
 {
   digitalWrite(SVET_PIN_1, A);
   digitalWrite(SVET_PIN_2, A);
   digitalWrite(SVET_PIN_3, A);
 }
  
-void Svet1_On()
+void Svet1_On() // Функция вкл только первой лампы
 {
   digitalWrite(SVET_PIN_1, A);
 }
  
-void Svet2_On()
+void Svet2_On() // Функция вкл только второй лампы
 {
   digitalWrite(SVET_PIN_2, A);
 }
  
-void Svet3_On()
+void Svet3_On() // Функция вкл только третьей лампы
 {
   digitalWrite(SVET_PIN_3, A);
 }
  
-void SvetAll_Off()
+void SvetAll_Off() // Функция выкл всех ламп
 {
   digitalWrite(SVET_PIN_1, B);
   digitalWrite(SVET_PIN_2, B);
   digitalWrite(SVET_PIN_3, B);
 }
  
-void Svet1_Off()
+void Svet1_Off() // Функция выкл только первой лампы
 {
   digitalWrite(SVET_PIN_1, B);
 }
  
-void Svet2_Off()
+void Svet2_Off() // Функция выкл только второй лампы
 {
   digitalWrite(SVET_PIN_2, B);
 }
  
-void Svet3_Off()
+void Svet3_Off() // Функция выкл только третьей лампы
 {
   digitalWrite(SVET_PIN_3, B);
 }
  
-void Allshow()
+void Allshow() // Функция вывода всех датчиков
 {
   Serial.println();
   Timeshow();
@@ -163,30 +170,31 @@ void Allshow()
   delay(1000);
 } 
  
-void PompOn()
+void PompOn() // Функция вкл насоса
 {
   digitalWrite (POMP_PIN, A);
 }
  
-void PompOff()
+void PompOff() // Функция выкл насоса
 {
   digitalWrite (POMP_PIN, B);
 }
  
  
-void user_commans()
+void user_commans() // Функция ожидания команд пользователя
 {
   while (Serial.available() > 0)
   {
     a = Serial.readString();
-    if (a == "1" || a == "All")
+
+    if (a == "1" || a == "All") // Вывод показателй всех датчиков
     {
       Serial.print("\n");
       Allshow();
       waits();
     }
  
-    else if (a == "2" || a == "Time" || a == "t")
+    else if (a == "2" || a == "Time" || a == "t") // Вывод даты и времени
     {
       Serial.print("\n");
       Timeshow();
@@ -194,7 +202,7 @@ void user_commans()
       waits();
     }
  
-    else if (a == "3" || a == "CO2") 
+    else if (a == "3" || a == "CO2") // Вывод показателя CO2
     {
       Serial.print("\n");
       CO2show();
@@ -202,14 +210,14 @@ void user_commans()
       waits();
     }
  
-    else if (a == "4" || a == "Humi")
+    else if (a == "4" || a == "Humi") // Вывод влажности
     {
       Serial.print("\n");
       Humishow();
       delay(1000);
       waits();
     }
-    else if (a == "5" || a == "Temp")
+    else if (a == "5" || a == "Temp") // Вывод температуры
     {
       Serial.print("\n");
       Tempshow();
@@ -217,7 +225,7 @@ void user_commans()
       waits();
     }
  
-    else if (a == "6" || a == "Voda")
+    else if (a == "6" || a == "Voda") //  Вывод уровня воды
     {
       Serial.print("\n");
       Vodashow();
@@ -225,63 +233,63 @@ void user_commans()
       waits();
     }
  
-    else if (a == "7+" || a == "SvetOn")
+    else if (a == "7+" || a == "SvetOn") // Вкл всех 3 ламп
     {
       SvetAll_On();
       Serial.println("Свет вкл");
       waits();
     }
  
-    else if (a == "7-" || a == "SvetOff")
+    else if (a == "7-" || a == "SvetOff") // Выкл всех 3 ламп
     {
       SvetAll_Off();
       Serial.println("Свет выкл");
       waits();
     }
  
-    else if (a == "71+" || a == "SvetOn 1")
+    else if (a == "71+" || a == "SvetOn 1") // Вкл только первой лампы
     {
       Svet1_On();
       Serial.println("Свет 1 вкл");
       waits();
     }
  
-    else if (a == "72+" || a == "SvetOn 2")
+    else if (a == "72+" || a == "SvetOn 2") // Вкл только второй лампы
     {
       Svet2_On();
       Serial.println("Свет 2 вкл");
       waits();
     }
  
-    else if (a == "73+" || a == "SvetOn 3")
+    else if (a == "73+" || a == "SvetOn 3") // Вкл только третьей лампы
     {
       Svet3_On();
       Serial.println("Свет 3 вкл");
       waits();
     }
  
-    else if (a == "71-" || a == "SvetOff 1")
+    else if (a == "71-" || a == "SvetOff 1") // Выкл только первой лампы
     {
       Svet1_Off();
       Serial.println("Свет 1 выкл");
       waits();
     }
  
-    else if (a == "72-" || a == "SvetOff 2")
+    else if (a == "72-" || a == "SvetOff 2") // Выкл только второй лампы
     {
       Svet2_Off();
       Serial.println("Свет 2 выкл");
       waits();
     }
  
-    else if (a == "73-" || a == "SvetOff 3")
+    else if (a == "73-" || a == "SvetOff 3") // Выкл только третьей лампы
     {
       Svet3_Off();
       Serial.println("Свет 3 выкл");
       waits();
     }
  
-    else if (a == "ИзВр" || a == "newt")
+    else if (a == "ИзВр" || a == "newt") // Изменить время
     {
         
       Serial.println();
@@ -303,7 +311,7 @@ void user_commans()
       waits();
     }
  
-    else if (a == "ПоРж" || a == "wm")
+    else if (a == "ПоРж" || a == "wm") // Вывод нынешнего режима работы
     {
       switch (b)
       {
@@ -322,35 +330,35 @@ void user_commans()
       waits();
     }
  
-    else if (a == "mAut")
+    else if (a == "mAut") // Вкл авторежима
     {
       b = 0;
       Serial.println("Активирован автороконтоль");
       waits();
     }
  
-    else if (a == "mMan")
+    else if (a == "mMan") // Вкл ручного режима
     {   
       b = 1;
       Serial.println("Активирован ручной режим");
       waits();
     }
     
-    else if (a == "PomU")
+    else if (a == "PomU") // Вкл насоса
     {
       PompOn();
       Serial.println("Носос вкл");
       waits();
     } 
  
-    else if (a == "PomD")
+    else if (a == "PomD") // Выкл насоса
     {
       PompOff();
       Serial.println("Носос выкл");
       waits();
     }
  
-    else
+    else // Вывод при вводе неверной команды
     {
       Serial.println("\n");
       Serial.print("I don't know this command, MY LORD!");
@@ -360,7 +368,7 @@ void user_commans()
   }
 }
  
-void Light_Time() // Автоматические вырубает свет
+void Light_Time() // Функция автоматического вкл и выкл всех трех ламп
 {
   if (String(RTC.getHours()) > "06" && String(RTC.getHours()) < "18")
   {
@@ -373,7 +381,7 @@ void Light_Time() // Автоматические вырубает свет
   }
 }
  
-void Pomp_In() // Автополив
+void Pomp_In() // Функция автополива: автоматический вкл и выкл насоса
 { 
   if 
   (
@@ -396,7 +404,7 @@ void Pomp_In() // Автополив
   }
 }
  
-void style_machine()
+void style_machine() // Функция выполнения автоматического вкл и выкл ламп и насоса
 {
   if (b == 0)
   {
@@ -405,7 +413,7 @@ void style_machine()
   }
 }
  
-void check()
+void check() // Фунция проверки норм показателй
 {
   if (String(co2.readCO2PWM()) < "0")
   {
@@ -442,31 +450,34 @@ void check()
  
 void setup() 
 {
-  Serial.begin(9600);
-  pinMode(CO2_IN, INPUT);
+  Serial.begin(9600); // Arduino подключилась к COM-порту
   RTC.begin();
   dht.begin();
- 
-  pinMode(SVET_PIN_1, OUTPUT);
-  pinMode(SVET_PIN_2, OUTPUT);
-  pinMode(SVET_PIN_3, OUTPUT); 
-  pinMode (10, INPUT);
-  pinMode (11, INPUT);
+
+  pinMode(CO2_IN, INPUT); // Подключение датчика MH-Z19B
+  pinMode(SVET_PIN_1, OUTPUT); // Подключение перво лампы
+  pinMode(SVET_PIN_2, OUTPUT); // Подключение второй лампы
+  pinMode(SVET_PIN_3, OUTPUT); // Подключение третьей лампы
+  pinMode (WB_1_PIN, INPUT); // Подключение первого пина датчика воды
+  pinMode (WB_2_PIN, INPUT); // Подключение второго пина датчика воды
  
   digitalWrite(SVET_PIN_1, LOW);
   digitalWrite(SVET_PIN_2, LOW);
   digitalWrite(SVET_PIN_3, LOW);
-  b = 0;
+  // Изначально все лампы вык
+
+
+  b = 0; // При включение программы изначально активирован авторежим
  
   Serial.println("YES, MY LORD!");
 }
  
 void loop() 
 {
-  user_commans();
+  user_commans(); // Ожидание ввода команд
   delay(3000);
-  style_machine();
-  // check();
+  style_machine(); // Проверка автоматического вкл и выкл ламп и насоса
+  // check(); // Проверка нормы показателей
   delay(2000);
 }
 
