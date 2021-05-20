@@ -471,7 +471,7 @@ void setup()
  
 void loop() 
 {
-  user_commans();
+  // user_commans();
   delay(3000);
   style_machine();
   // check();
