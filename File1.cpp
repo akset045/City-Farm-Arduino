@@ -51,13 +51,14 @@ byte mac[] =
 IPAddress ip(172,22,0,10);
 
 EthernetServer server(80);
- 
+
+/* 
 void waits()
 {
   Serial.print("\n");
   Serial.println(waitg);
 }
- 
+*/
  
 void CO2show()
 {
@@ -178,7 +179,7 @@ void PompOff()
   digitalWrite (POMP_PIN, B);
 }
  
- 
+/*  
 void user_commans()
 {
   while (Serial.available() > 0)
@@ -364,6 +365,8 @@ void user_commans()
   
   }
 }
+
+*/
  
 void Light_Time() // Автоматические вырубает свет
 {
@@ -463,7 +466,7 @@ void setup()
   digitalWrite(SVET_PIN_3, LOW);
   b = 0;
  
-  Serial.println("YES, MY LORD!");
+  // Serial.println("YES, MY LORD!");
 }
  
 void loop() 
