@@ -367,7 +367,7 @@ void Light_Time() // Автоматические вырубает свет
 }
  
 void Pomp_In() // Автополив
- 
+{ 
   if 
   (
     String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) > "14:27" && 
