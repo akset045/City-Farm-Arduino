@@ -445,6 +445,63 @@ void check()
     Serial.println(N1 + N6 + " выше " + N5 + String(dht.readHumidity()) + N8);
   } 
 }
+
+
+void clientA()
+
+{
+
+  EthernetClient client = server.available();
+
+  if (client)
+  
+  {
+    Serial.println("new client");
+    boolean currentLineIsBlank = true;
+    while (client.connected()) 
+    {
+      if (client.available()) 
+      {
+        char c = client.read();
+        Serial.write(c);
+        if (c == '\n' && currentLineIsBlank) 
+        {
+          client.println("HTTP/1.1 200 OK");
+          client.println("Content-Type: text/html");
+          client.println("Connection: close"); 
+          client.println("Refresh: 5");
+          client.println();
+          client.println("<!DOCTYPE HTML>");
+          client.println("<html>");
+          for (int analogChannel = 0; analogChannel < 6; analogChannel++) 
+          {
+            int sensorReading = analogRead(analogChannel);
+            client.print("analog input ");
+            client.print(analogChannel);
+            client.print(" is ");
+            client.print(sensorReading);
+            client.println("<br />");
+          }
+          client.println("</html>");
+          break;
+        }
+
+        if (c == '\n') 
+        {
+          currentLineIsBlank = true;
+        } else if (c != '\r') 
+        
+        {
+          currentLineIsBlank = false;
+        }
+      }
+    }
+    delay(1);
+    client.stop();
+    Serial.println("client disconnected");
+  }
+
+}
  
 // БАЗОВЫЕ БЛОКИ 
  
@@ -465,6 +522,35 @@ void setup()
   digitalWrite(SVET_PIN_2, LOW);
   digitalWrite(SVET_PIN_3, LOW);
   b = 0;
+
+  Serial.begin(9600);
+  while (!Serial) 
+  {
+    ; 
+  }
+
+  Serial.println("Ethernet WebServer Example");
+
+  Ethernet.begin(mac, ip);
+
+  if (Ethernet.hardwareStatus() == EthernetNoHardware) 
+  {
+    Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
+    while (true) 
+    {
+      delay(1);
+    }
+  }
+
+  if (Ethernet.linkStatus() == LinkOFF) 
+  {
+    Serial.println("Ethernet cable is not connected.");
+  }
+
+  // start the server
+  server.begin();
+  Serial.print("server is at ");
+  Serial.println(Ethernet.localIP());
  
   // Serial.println("YES, MY LORD!");
 }
