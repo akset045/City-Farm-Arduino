@@ -190,11 +190,11 @@ void Vremy()
   Serial.println(D1 + D2 + D4);
   delay(5000);
   c = Serial.readString();
-  Serial.println(String("Н = " + c));
+  Serial.println(String("Начало = " + c));
   Serial.println(D1 + D3 + D4);
   delay(5000);
   d = Serial.readString();
-  Serial.println(String("К = " + d));
+  Serial.println(String("Конец = " + d));
   delay(1000);
 
 }
