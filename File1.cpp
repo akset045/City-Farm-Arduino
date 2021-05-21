@@ -26,6 +26,8 @@
 // Насос воды:
 #define POMP_PIN 4
 
+#define Now String(String(RTC.getHours()) + ":" + String(RTC.getMinutes()))
+
 // Сокращения для подачи и отключения электро-питания:
 #define A HIGH
 #define B LOW
@@ -53,6 +55,10 @@ const String N5 = "положеного – ";
 const String N6 = "влажности";
 const String N7 = "CO2";
 const String N8 = "%";
+const String D1 = "Введите время ";
+const String D2 = "начало";
+const String D3 = "конца";
+const String D4 = " дня ЧЧ:ММ";
  
 void waits() // Функция сигнализирующая выполнение команды и ожидания следующей
 {
@@ -178,6 +184,20 @@ void PompOn() // Функция вкл насоса
 void PompOff() // Функция выкл насоса
 {
   digitalWrite (POMP_PIN, B);
+}
+
+void Vremy()
+{
+  Serial.println(D1 + D2 + D4);
+  delay(5000);
+  c = Serial.readString();
+  Serial.println(String("Н = " + c));
+  Serial.println(D1 + D3 + D4);
+  delay(5000);
+  d = Serial.readString();
+  Serial.println(String("К = " + d));
+  delay(1000);
+
 }
 
 void user_commans() // Функция ожидания команд пользователя
@@ -316,23 +336,8 @@ void user_commans() // Функция ожидания команд пользо
  
     else if (a == "ИзВр" || a == "newt") // Изменить время
     {
-        
+      Vremy();
       Serial.println();
-      Serial.print("Старое время: ");
-      Timeshow();
-      Serial.println();
-      Serial.println("Укажите новое: ");
-      Serial.print("1: ");
-      // c = Serial.read();
-      // delay(1000);
-      // Serial.print("2: ");
-      // d = Serial.readString();
-      // RTC.setDateTime(c, d);
-      // RTC.setDateTime(c*, d*);
-      // RTC.setDateTime(__DATE__, __TIME__);
-      // RTC.setDateTime(*__DATE__, *__TIME__);
-
-      Timeshow();              
       waits();
     }
  
@@ -395,6 +400,7 @@ void user_commans() // Функция ожидания команд пользо
  
 void Light_Time() // Функция автоматического вкл и выкл всех трех ламп
 {
+  /*
   if (String(RTC.getHours()) > "06" && String(RTC.getHours()) < "18")
   {
     SvetAll_On();
@@ -404,14 +410,27 @@ void Light_Time() // Функция автоматического вкл и в�
   {
     SvetAll_Off();
   }
+  */
+ 
+  if (Now > c && Now < d)
+  {
+    SvetAll_On();
+  }
+
 }
  
 void Pomp_In() // Функция автополива: автоматический вкл и выкл насоса
 { 
   if 
   (
+    /*
     String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) > "14:27" && 
     String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) < "14:29"
+    */
+   
+    String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) > "14:27" && 
+    String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) < "14:29"
+   
   )
  
   {
@@ -491,9 +510,14 @@ void setup()
   digitalWrite(SVET_PIN_3, LOW);
   // Изначально все лампы вык
 
+  c = " ";
+  d = " ";
+  Vremy();
+  delay(5000);
+
 
   b = 0; // При включение программы изначально активирован авторежим
- 
+  Serial.println();
   Serial.println("YES, MY LORD!");
 }
  
