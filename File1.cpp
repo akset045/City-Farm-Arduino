@@ -3,6 +3,10 @@
 #include "DHT.h"
 #include "MHZ.h"   
 #include "RTC.h"
+#include <SPI.h>
+#include <Ethernet.h>
+
+// С Web-Server
  
 #define CO2_IN 9
  
@@ -29,6 +33,7 @@ String a;
 int b;
 char c;
 char d;
+boolean newcom = 0;
  
 const String waitg = "Done. I'm listening  MY LORD!";
 const String N1 = "Уровень ";
@@ -39,18 +44,41 @@ const String N5 = "положеного – ";
 const String N6 = "влажности";
 const String N7 = "CO2";
 const String N8 = "%";
- 
+
+byte mac[] = 
+{
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
+};
+IPAddress ip(172,22,0,10);
+
+EthernetServer server(80);
+
+/* 
 void waits()
 {
   Serial.print("\n");
   Serial.println(waitg);
 }
- 
- 
+*/
+
+/* 
 void CO2show()
 {
-  Serial.println("CO2: " + String(co2.readCO2PWM()));
+  client.println("HTTP/1.1 200 OK");
+  client.println("Content-Type: text/html");
+  client.println("Connection: close"); 
+  client.println("Refresh: 5");
+  client.println();
+  client.println("<!DOCTYPE HTML>");
+  client.println("<html>");
+  client.print("<title>My web Server</title>");                  //название страницы
+  client.print("<H1>My web Server</H1>");                        //заголовк на странице
+  client.print("CO2: " + String(co2.readCO2PWM()));      //кнопка выключить
+  client.println("<br />");
+  client.println("</html>");
+  break;
 }
+*/
  
 void Timeshow()
 {
@@ -143,7 +171,7 @@ void Allshow()
   Timeshow();
   delay(1000);
   Serial.println();
-  CO2show();
+  // CO2show();
   delay(1000);
   Serial.println();
   Humishow();
@@ -162,197 +190,10 @@ void PompOn()
 }
  
 void PompOff()
-{
+{ 
   digitalWrite (POMP_PIN, B);
 }
- 
- 
-void user_commans()
-{
-  while (Serial.available() > 0)
-  {
-    a = Serial.readString();
-    if (a == "1" || a == "All")
-    {
-      Serial.print("\n");
-      Allshow();
-      waits();
-    }
- 
-    else if (a == "2" || a == "Time" || a == "t")
-    {
-      Serial.print("\n");
-      Timeshow();
-      delay(1000);
-      waits();
-    }
- 
-    else if (a == "3" || a == "CO2") 
-    {
-      Serial.print("\n");
-      CO2show();
-      delay(1000);
-      waits();
-    }
- 
-    else if (a == "4" || a == "Humi")
-    {
-      Serial.print("\n");
-      Humishow();
-      delay(1000);
-      waits();
-    }
-    else if (a == "5" || a == "Temp")
-    {
-      Serial.print("\n");
-      Tempshow();
-      delay(1000);
-      waits();
-    }
- 
-    else if (a == "6" || a == "Voda")
-    {
-      Serial.print("\n");
-      Vodashow();
-      delay(1000);
-      waits();
-    }
- 
-    else if (a == "7+" || a == "SvetOn")
-    {
-      SvetAll_On();
-      Serial.println("Свет вкл");
-      waits();
-    }
- 
-    else if (a == "7-" || a == "SvetOff")
-    {
-      SvetAll_Off();
-      Serial.println("Свет выкл");
-      waits();
-    }
- 
-    else if (a == "71+" || a == "SvetOn 1")
-    {
-      Svet1_On();
-      Serial.println("Свет 1 вкл");
-      waits();
-    }
- 
-    else if (a == "72+" || a == "SvetOn 2")
-    {
-      Svet2_On();
-      Serial.println("Свет 2 вкл");
-      waits();
-    }
- 
-    else if (a == "73+" || a == "SvetOn 3")
-    {
-      Svet3_On();
-      Serial.println("Свет 3 вкл");
-      waits();
-    }
- 
-    else if (a == "71-" || a == "SvetOff 1")
-    {
-      Svet1_Off();
-      Serial.println("Свет 1 выкл");
-      waits();
-    }
- 
-    else if (a == "72-" || a == "SvetOff 2")
-    {
-      Svet2_Off();
-      Serial.println("Свет 2 выкл");
-      waits();
-    }
- 
-    else if (a == "73-" || a == "SvetOff 3")
-    {
-      Svet3_Off();
-      Serial.println("Свет 3 выкл");
-      waits();
-    }
- 
-    else if (a == "ИзВр" || a == "newt")
-    {
-        
-      Serial.println();
-      Serial.print("Старое время: ");
-      Timeshow();
-      Serial.println();
-      Serial.println("Укажите новое: ");
-      Serial.print("1: ");
-      c = Serial.read();
-      delay(1000);
-      Serial.print("2: ");
-      d = Serial.read();
-      RTC.setDateTime(c, d);
-      // RTC.setDateTime(c*, d*);
-      // RTC.setDateTime(__DATE__, __TIME__);
-      // RTC.setDateTime(*__DATE__, *__TIME__);
 
-      Timeshow();              
-      waits();
-    }
- 
-    else if (a == "ПоРж" || a == "wm")
-    {
-      switch (b)
-      {
-        case (0):
-        {
-          Serial.println("Активен автоконтроль");
-          break;
-        }
-        case (1):
-        {
-          Serial.println("Активен автоконтроль");
-          break;
-        }
-        break;
-      }
-      waits();
-    }
- 
-    else if (a == "mAut")
-    {
-      b = 0;
-      Serial.println("Активирован автороконтоль");
-      waits();
-    }
- 
-    else if (a == "mMan")
-    {   
-      b = 1;
-      Serial.println("Активирован ручной режим");
-      waits();
-    }
-    
-    else if (a == "PomU")
-    {
-      PompOn();
-      Serial.println("Носос вкл");
-      waits();
-    } 
- 
-    else if (a == "PomD")
-    {
-      PompOff();
-      Serial.println("Носос выкл");
-      waits();
-    }
- 
-    else
-    {
-      Serial.println("\n");
-      Serial.print("I don't know this command, MY LORD!");
-      Serial.println("\n");
-    }
-  
-  }
-}
- 
 void Light_Time() // Автоматические вырубает свет
 {
   if (String(RTC.getHours()) > "06" && String(RTC.getHours()) < "18")
@@ -430,6 +271,76 @@ void check()
     Serial.println(N1 + N6 + " выше " + N5 + String(dht.readHumidity()) + N8);
   } 
 }
+
+
+void clientA()
+{
+  EthernetClient client = server.available();
+  if (client)
+  {
+    Serial.println("new client");
+    boolean currentLineIsBlank = true;
+    while (client.connected()) 
+    {
+      if (client.available()) 
+      {
+        char c = client.read();
+
+        if (newcom == " ")
+        {
+          newcom = 0;
+        }
+
+        if (c == '1')
+        {
+          newcom = 1;
+        }
+
+        if (newcom == 1)
+        {
+          Serial.println(c);
+          if (c == '1')
+          {
+            Allshow();
+          }
+
+          if (c == "2")
+          {
+            // CO2show();
+
+          
+
+          }
+        }
+
+        Serial.write(c);
+        if (c == '\n' && currentLineIsBlank) 
+        {
+          client.println("HTTP/1.1 200 OK");
+          client.println("Content-Type: text/html");
+          client.println("Connection: close"); 
+          client.println("Refresh: 5");
+          client.println();
+          client.println("<!DOCTYPE HTML>");
+          client.println("<html>");
+          client.print("<title>My web Server</title>");                  //название страницы
+          client.print("<H1>My web Server</H1>");                        //заголовк на странице
+          client.print("<a href=\"/$1\"><button>On</button></a>");       //кнопка включить
+          client.print("<a href=\"/$2\"><button>Off</button></a>");      //кнопка выключить
+          client.println("<br />");
+          client.print("<a " String(Vodashow()) "</a>");
+          client.println("</html>");
+          break;
+        }
+
+      }
+    }
+    delay(1);
+    client.stop();
+    Serial.println("client disconnected");
+  }
+
+}
  
 // БАЗОВЫЕ БЛОКИ 
  
@@ -450,13 +361,39 @@ void setup()
   digitalWrite(SVET_PIN_2, LOW);
   digitalWrite(SVET_PIN_3, LOW);
   b = 0;
- 
-  Serial.println("YES, MY LORD!");
+
+  Serial.begin(9600);
+  while (!Serial) 
+  {
+    ; 
+  }
+
+  Serial.println("Ethernet WebServer Example");
+
+  Ethernet.begin(mac, ip);
+
+  if (Ethernet.hardwareStatus() == EthernetNoHardware) 
+  {
+    Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
+    while (true) 
+    {
+      delay(1);
+    }
+  }
+
+  if (Ethernet.linkStatus() == LinkOFF) 
+  {
+    Serial.println("Ethernet cable is not connected.");
+  }
+
+  server.begin();
+  Serial.print("server is at ");
+  Serial.println(Ethernet.localIP());
 }
  
 void loop() 
 {
-  user_commans();
+  clientA();
   delay(3000);
   style_machine();
   // check();
