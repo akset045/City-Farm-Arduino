@@ -26,8 +26,6 @@
 // Насос воды:
 #define POMP_PIN 4
 
-#define Now String(String(RTC.getHours()) + ":" + String(RTC.getMinutes()))
-
 // Сокращения для подачи и отключения электро-питания:
 #define A HIGH
 #define B LOW
@@ -44,6 +42,7 @@ char d;
 */
 String c;
 String d;
+String Now;
 
 // Набор сокращений имён:
 const String waitg = "Done. I'm listening  MY LORD!";
@@ -74,14 +73,15 @@ void CO2show() // Функция вывода показателей CO2
  
 void Timeshow() // Функция вывода даты и времени
 {
-  Serial.println(
+  Serial.print(
   "Date: " +
   String(RTC.getDay()) + "." + 
   String(RTC.getMonth()) + "." + 
-  String(RTC.getYear())  + "\n" + "Time: " + 
+  String(RTC.getYear()));
+  Serial.println();
+  Serial.println("Time: " + 
   String(RTC.getHours()) + ":" + 
-  String(RTC.getMinutes()) + ":" + 
-  String(RTC.getSeconds())
+  String(RTC.getMinutes())
   );
 }
  
@@ -243,7 +243,7 @@ void user_commans() // Функция ожидания команд пользо
     {
       Serial.print("\n");
       Timeshow();
-      delay(1000);
+      
       waits();
     }
  
@@ -452,6 +452,7 @@ void style_machine() // Функция выполнения автоматиче
 {
   if (b == 0)
   {
+    Now = String(String(RTC.getHours()) + ":" + String(RTC.getMinutes()));
     Light_Time();
     Pomp_In();
   }
@@ -505,19 +506,19 @@ void setup()
   pinMode (WB_1_PIN, INPUT); // Подключение первого пина датчика воды
   pinMode (WB_2_PIN, INPUT); // Подключение второго пина датчика воды
  
-  digitalWrite(SVET_PIN_1, LOW);
-  digitalWrite(SVET_PIN_2, LOW);
-  digitalWrite(SVET_PIN_3, LOW);
+  digitalWrite(SVET_PIN_1, B);
+  digitalWrite(SVET_PIN_2, B);
+  digitalWrite(SVET_PIN_3, B);
   // Изначально все лампы вык
 
   c = " ";
   d = " ";
-  Vremy();
-  delay(5000);
+  // Vremy();
+  // delay(5000);
 
 
   b = 0; // При включение программы изначально активирован авторежим
- 
+  // Serial.println(Now);
   Serial.println("YES, MY LORD!");
 }
  
@@ -528,4 +529,5 @@ void loop()
   style_machine(); // Проверка автоматического вкл и выкл ламп и насоса
   // check(); // Проверка нормы показателей
   delay(2000);
+  // Serial.println(Now);
 }
