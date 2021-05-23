@@ -36,13 +36,6 @@ static DS3231 RTC; // Датчик времени
  
 String a; // Переменная ввода команд на COM-терминале
 int b; // Переменная режима работы: авто и ручной
-/*
-char c;
-char d;
-*/
-String c;
-String d;
-String Now;
 
 // Набор сокращений имён:
 const String waitg = "Done. I'm listening  MY LORD!";
@@ -54,18 +47,13 @@ const String N5 = "положеного – ";
 const String N6 = "влажности";
 const String N7 = "CO2";
 const String N8 = "%";
-const String D1 = "Введите время ";
-const String D2 = "начало";
-const String D3 = "конца";
-const String D4 = " дня ЧЧ:ММ";
  
 void waits() // Функция сигнализирующая выполнение команды и ожидания следующей
 {
   Serial.print("\n");
   Serial.println(waitg);
 }
- 
- 
+
 void CO2show() // Функция вывода показателей CO2
 {
   Serial.println("CO2: " + String(co2.readCO2PWM()));
@@ -183,20 +171,6 @@ void PompOn() // Функция вкл насоса
 void PompOff() // Функция выкл насоса
 {
   digitalWrite (POMP_PIN, B);
-}
-
-void Vremy()
-{
-  Serial.println(D1 + D2 + D4);
-  delay(5000);
-  c = Serial.readString();
-  Serial.println(String("Начало = " + c));
-  Serial.println(D1 + D3 + D4);
-  delay(5000);
-  d = Serial.readString();
-  Serial.println(String("Конец = " + d));
-  delay(1000);
-
 }
 
 void user_commans() // Функция ожидания команд пользователя
@@ -331,14 +305,7 @@ void user_commans() // Функция ожидания команд пользо
       Serial.println("Свет 3 выкл");
       waits();
     }
- 
-    else if (a == "ИзВр" || a == "newt") // Изменить время
-    {
-      Vremy();
-      Serial.println();
-      waits();
-    }
- 
+  
     else if (a == "ПоРж" || a == "wm") // Вывод нынешнего режима работы
     {
       switch (b)
@@ -375,14 +342,14 @@ void user_commans() // Функция ожидания команд пользо
     else if (a == "PomU") // Вкл насоса
     {
       PompOn();
-      Serial.println("Носос вкл");
+      Serial.println("Насос вкл");
       waits();
     } 
  
     else if (a == "PomD") // Выкл насоса
     {
       PompOff();
-      Serial.println("Носос выкл");
+      Serial.println("Насос выкл");
       waits();
     }
 
@@ -398,7 +365,7 @@ void user_commans() // Функция ожидания команд пользо
  
 void Light_Time() // Функция автоматического вкл и выкл всех трех ламп
 {
-  /*
+
   if (String(RTC.getHours()) > "06" && String(RTC.getHours()) < "18")
   {
     SvetAll_On();
@@ -408,25 +375,17 @@ void Light_Time() // Функция автоматического вкл и в�
   {
     SvetAll_Off();
   }
-  */
+  
  
-  if (Now > c && Now < d)
-  {
-    SvetAll_On();
-  }
-
 }
  
 void Pomp_In() // Функция автополива: автоматический вкл и выкл насоса
 { 
   if 
   (
-    /*
-    String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) > "14:27" && 
-    String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) < "14:29"
-    */
-   
-    String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) > "14:27" && 
+
+    String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) > "14:27" 
+    && 
     String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) < "14:29"
    
   )
@@ -437,7 +396,8 @@ void Pomp_In() // Функция автополива: автоматическ�
  
   else if 
   (
-    String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) > "14:28" || 
+    String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) > "14:28"
+    || 
     String(String(RTC.getHours()) + ":" + String(RTC.getMinutes())) < "14:27"
   )
  
@@ -450,7 +410,6 @@ void style_machine() // Функция выполнения автоматиче
 {
   if (b == 0)
   {
-    Now = String(String(RTC.getHours()) + ":" + String(RTC.getMinutes()));
     Light_Time();
     Pomp_In();
   }
@@ -509,14 +468,8 @@ void setup()
   digitalWrite(SVET_PIN_3, B);
   // Изначально все лампы вык
 
-  c = " ";
-  d = " ";
-  // Vremy();
-  // delay(5000);
-
-
   b = 0; // При включение программы изначально активирован авторежим
-  // Serial.println(Now);
+
   Serial.println("YES, MY LORD!");
 }
  
@@ -525,7 +478,6 @@ void loop()
   user_commans(); // Ожидание ввода команд
   delay(3000);
   style_machine(); // Проверка автоматического вкл и выкл ламп и насоса
-  // check(); // Проверка нормы показателей
+  check(); // Проверка нормы показателей
   delay(2000);
-  // Serial.println(Now);
 }
