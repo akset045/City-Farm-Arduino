@@ -1,26 +1,8 @@
 
- 
-#define A HIGH
-#define B LOW
- 
-MHZ co2(CO2_IN, MHZ19B);
-DHT dht(DHT22_PIN, DHTTYPE);
-static DS3231 RTC;
- 
 String a;
 int b;
 char c;
 char d;
- 
-const String waitg = "Done. I'm listening  MY LORD!";
-const String N1 = "Уровень ";
-const String N2 = "Температура ";
-const String N3 = " больше ";
-const String N4 = " меньше ";
-const String N5 = "положеного – ";
-const String N6 = "влажности";
-const String N7 = "CO2";
-const String N8 = "%";
  
 void waits()
 {
