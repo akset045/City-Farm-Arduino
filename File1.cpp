@@ -1,22 +1,4 @@
-#include <SoftwareSerial.h>
-#include <Wire.h>
-#include "DHT.h"
-#include "MHZ.h"   
-#include "RTC.h"
- 
-#define CO2_IN 9
- 
-#define DHT22_PIN 8
-#define DHTTYPE DHT22
- 
-#define WB_1_PIN 10
-#define WB_2_PIN 11
- 
-#define SVET_PIN_1 5
-#define SVET_PIN_2 6
-#define SVET_PIN_3 7
- 
-#define POMP_PIN 4
+
  
 #define A HIGH
 #define B LOW
