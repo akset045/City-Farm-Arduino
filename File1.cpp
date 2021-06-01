@@ -33,7 +33,7 @@ DHT dht(DHT22_PIN, DHTTYPE); // Датчик DHT для влажности и т
 static DS3231 RTC; // Датчик времени
  
 String a; // Переменная ввода команд на COM-терминале
-int b; // Переменная режима работы: авто и ручной
+bool b; // Переменная режима работы: авто и ручной
 
 // Набор сокращений имён:
 const String waitg = "Done. I'm listening  MY LORD!";
@@ -48,7 +48,6 @@ const String N8 = "%";
  
 void waits() // Функция сигнализирующая выполнение команды и ожидания следующей
 {
-  Serial.print("\n");
   Serial.println(waitg);
 }
 
