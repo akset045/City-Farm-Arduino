@@ -1,5 +1,3 @@
-#include <SoftwareSerial.h>
-#include <Wire.h>
 #include "DHT.h"
 #include "MHZ.h"   
 #include "RTC.h"
