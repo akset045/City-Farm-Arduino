@@ -9,4 +9,6 @@ void waits()
   Serial.print("\n");
   Serial.println(waitg);
 }
- 
+
+
+// Тут что-то будет
