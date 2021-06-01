@@ -173,6 +173,13 @@ void PompOff() // Функция выкл насоса
   digitalWrite (POMP_PIN, B);
 }
 
+void SetTnD()
+{
+  RTC.setHourMode(CLOCK_H24);
+  RTC.setDateTime(__DATE__, __TIME__);
+  RTC.startClock();
+}
+
 void user_commans() // Функция ожидания команд пользователя
 
 /*
@@ -469,6 +476,8 @@ void setup()
   // Изначально все лампы вык
 
   b = 0; // При включение программы изначально активирован авторежим
+
+  SetTnD(); // Задать на Arduino дату и время с компа
 
   Serial.println("YES, MY LORD!");
 }
