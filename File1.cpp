@@ -86,12 +86,17 @@ void Tempshow() // Функция вывода температуры
  
 void Vodashow() // Функция вывода уровня воды
 {
-  if (digitalRead(WB_1_PIN) == 0) 
+  if (digitalRead(WB_1_PIN) == 0 && digitalRead(WB_2_PIN) == 0 ) 
   {
-    Serial.println("Воды есть");
+    Serial.println("Воды есть.");
+  }
+
+  else if (digitalRead(WB_1_PIN) == 1 && digitalRead(WB_2_PIN) == 0 )
+  {
+    Serial.println("Воды половина.");
   }
  
-  else 
+  else if (digitalRead(WB_1_PIN) == 1 && digitalRead(WB_2_PIN) == 1 )
   {
     Serial.println("Воды нет");
   }
